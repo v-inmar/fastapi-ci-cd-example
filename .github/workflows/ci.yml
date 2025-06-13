@@ -1,0 +1,43 @@
+# .github/workflows/ci.yml
+
+name: CI Pipeline for FastAPI App
+
+on:
+  push:
+    branches:
+      - main # This workflow runs when code is pushed to the 'main' branch
+  pull_request:
+    branches:
+      - main # Also runs when a pull request is opened/updated against 'main'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # The type of runner that the job will run on (a virtual machine hosted by GitHub)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Action to check out your repository code
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13" # Specify the Python version to use for our tests
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # If you were to add a testing framework like pytest, you'd install it here too
+          # pip install pytest
+
+      - name: Run tests (Placeholder for now)
+        run: |
+          echo "Running tests..."
+          # In a real app, you'd have actual test commands here, e.g.,
+          # pytest
+          # For now, we'll just ensure the app can start
+          uvicorn main:app --host 0.0.0.0 --port 8000 &
+          sleep 5 # Give the server a moment to start
+          curl -f http://localhost:8000/ # Check if the root endpoint responds
+          curl -f http://localhost:8000/items/1 # Check another endpoint
+          echo "Basic API check passed!"
